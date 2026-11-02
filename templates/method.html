@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}{{ method.name }} - Numerical Methods{% endblock %}
+
+{% block content %}
+<section class="method-heading">
+  <p class="eyebrow">{{ method.category }}</p>
+  <h1>{{ method.name }}</h1>
+  <p class="lead">{{ method.description }}</p>
+  <p class="formula">{{ method.formula }}</p>
+</section>
+
+<div class="workspace">
+  <aside class="sidebar">
+    <form class="panel" id="method-form" data-slug="{{ method.slug }}" data-kind="{{ method.kind }}" novalidate>
+      <h2>Inputs</h2>
+
+      {% if method.kind == "root" %}
+        {% for field in method.fields %}
+        <label class="field">
+          <span class="field-label">{{ field.label }}</span>
+          <input class="mono" name="{{ field.name }}" value="{{ field.default }}" autocomplete="off" spellcheck="false">
+          {% if field.hint %}<span class="field-hint">{{ field.hint }}</span>{% endif %}
+        </label>
+        {% endfor %}
+      {% else %}
+        <label class="field">
+          <span class="field-label">Number of variables</span>
+          <select id="matrix-size">
+            {% for size in range(method.MIN_SIZE, method.MAX_SIZE + 1) %}
+            <option value="{{ size }}">{{ size }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <div class="field">
+          <span class="field-label">Ax = b</span>
+          <div class="scroll-x">
+            <div class="matrix-input" id="matrix-grid" data-default='{{ method.fields[0].default | tojson }}'></div>
+          </div>
+        </div>
+      {% endif %}
+
+      <button class="primary" type="submit">Calculate</button>
+    </form>
+
+    <section class="panel">
+      <h2>History</h2>
+      <ul class="history" id="history"></ul>
+    </section>
+  </aside>
+
+  <section class="results" id="results">
+    <p class="placeholder">Enter your values and press Calculate. The graph and answer will appear here.</p>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/method.js') }}"></script>
+{% endblock %}

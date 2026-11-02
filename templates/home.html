@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="home">
+  <h1>Numerical Methods</h1>
+  <p class="lead">Choose a topic, enter your values, and see the graph and the answer.</p>
+
+  <label class="field home-picker">
+    <span class="field-label">Topic</span>
+    <select id="topic-select">
+      <option value="">Choose a topic...</option>
+      {% for category in ["Root finding", "Linear systems"] %}
+      <optgroup label="{{ category }}">
+        {% for method in methods if method.category == category %}
+        <option value="{{ method.slug }}">{{ method.name }}</option>
+        {% endfor %}
+      </optgroup>
+      {% endfor %}
+    </select>
+  </label>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}
